@@ -1,0 +1,36 @@
+<html>
+  <body>
+    <input type="text" />
+    <button onclick="addTodo()">Add todo</button>
+  </body>
+  <script>
+    let counter = 0;
+    // function addTodo() {
+    //   const inputElement = document.querySelector("input");
+    //   const value = inputElement.value;
+
+    // const newDiv = document.createElement("div");
+    //   newDiv.setAttribute("id", counter);
+    //   newDiv.innerHTML = `<div>
+    //     ${value}
+    //     </div><button onclick='deleteTodo(${counter})'>Delete</button>`;
+
+    //   document.querySelector("body").appendChild(newDiv);
+    // }
+    // function deleteTodo(counter) {
+    //   let todo = document.getElementById(counter);
+    //   todo.parentNode.removeChild(todo);
+    // }
+    function addTodo() {
+      const value = document.querySelector("input").value;
+      const spanEL = document.createElement("span");
+      const buttonEl = document.createElement("button");
+      spanEL.innerHTML = value;
+      buttonEl.innerHTML = "Delete";
+      const newDiv = document.createElement("div");
+      newDiv.appendChild(spanEL);
+      newDiv.appendChild(buttonEl);
+      document.querySelector("body").appendChild(newDiv);
+    }
+  </script>
+</html>
