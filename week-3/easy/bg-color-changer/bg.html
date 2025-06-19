@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Buttons</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      .div1 {
+        height: 80vh;
+        width: 100%;
+        margin: 10px;
+        background: black;
+      }
+      .btn {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="div1"></div>
+    <div class="btn">
+      <button>Red</button>
+      <button>Green</button>
+      <button>Yellow</button>
+      <button>Blue</button>
+      <button>Black</button>
+      <button>Purple</button>
+      <button>Default</button>
+    </div>
+
+    <script>
+      const defaultColor = "white";
+      const div = document.querySelector(".div1");
+      const buttons = document.querySelectorAll("button");
+
+      buttons.forEach((btn) => {
+        const color = btn.innerHTML.toLowerCase();
+
+        // Set button background color
+        btn.style.backgroundColor = color;
+
+        if (color === "black") {
+          btn.style.color = "white";
+        }
+
+        btn.addEventListener("click", () => {
+          if (color === "default") {
+            div.style.backgroundColor = defaultColor;
+          } else {
+            div.style.backgroundColor = color;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
