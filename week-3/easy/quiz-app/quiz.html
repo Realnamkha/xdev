@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiz</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        min-height: 60vh;
+        background-color: gray;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        flex-direction: column;
+        border-radius: 10px;
+      }
+      .question {
+        display: flex;
+        justify-content: center;
+        font-size: 35px;
+        padding: 20px 20px;
+      }
+      .option {
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 20px;
+        gap: 40px;
+      }
+      .option > div {
+        margin-bottom: 40px;
+      }
+      label {
+        font-size: 30px;
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+      .submit {
+        margin-top: auto;
+        display: flex;
+        justify-content: center;
+      }
+      button {
+        padding: 30px;
+        font-size: 20px;
+        border-radius: 10px;
+        border: none;
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="submit">
+        <button id="submitBtn">Submit</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import { quizData } from "./data.js";
+
+      const container = document.querySelector(".container");
+      const submitBtn = document.getElementById("submitBtn");
+      let score = 0;
+      let currentQuestionIndex = 0;
+
+      function createComponent(question, answersObj, questionIndex) {
+        const maindiv = document.createElement("div");
+        const questionDiv = document.createElement("div");
+        const optionsDiv = document.createElement("div");
+
+        questionDiv.className = "question";
+        optionsDiv.className = "option";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = question;
+        questionDiv.appendChild(h2);
+
+        Object.entries(answersObj).forEach(([key, answer]) => {
+          const wrapper = document.createElement("div");
+
+          const inputEl = document.createElement("input");
+          const label = document.createElement("label");
+
+          inputEl.setAttribute("type", "radio");
+          inputEl.setAttribute("id", key);
+          inputEl.setAttribute("name", `question-${questionIndex}`);
+          inputEl.setAttribute("value", key);
+
+          label.setAttribute("for", key);
+          label.textContent = answer;
+
+          wrapper.appendChild(inputEl);
+          wrapper.appendChild(label);
+          optionsDiv.appendChild(wrapper);
+        });
+
+        maindiv.appendChild(questionDiv);
+        maindiv.appendChild(optionsDiv);
+        return maindiv;
+      }
+
+      function renderQuestion(index) {
+        // Remove old question if any (everything except the submit button)
+        const existingQuestions =
+          container.querySelectorAll("div:not(.submit)");
+        existingQuestions.forEach((el) => el.remove());
+
+        if (index >= quizData.length) {
+          // No more questions: show completion message or disable button
+          const doneMsg = document.createElement("div");
+          doneMsg.textContent = `Quiz completed! Thanks for participating.Your Total Score is ${score}/4`;
+          doneMsg.style.fontSize = "2rem";
+          doneMsg.style.margin = "40px auto";
+          container.insertBefore(doneMsg, container.querySelector(".submit"));
+          submitBtn.disabled = true;
+          return;
+        }
+
+        const { question, a, b, c, d } = quizData[index];
+        const element = createComponent(question, { a, b, c, d }, index);
+        container.insertBefore(element, container.querySelector(".submit"));
+      }
+
+      function checkAnswerAndNext() {
+        const qIndex = currentQuestionIndex;
+        const questionName = `question-${qIndex}`;
+        const selected = document.querySelector(
+          `input[name="${questionName}"]:checked`
+        );
+
+        if (!selected) {
+          alert("Please select an answer before submitting!");
+          return; // Don't go forward if no answer selected
+        }
+
+        const correct = quizData[qIndex].correct;
+        if (selected.value === correct) {
+          score++;
+          console.log(`Question ${qIndex + 1}: Correct!`);
+        } else {
+          console.log(
+            `Question ${qIndex + 1}: Wrong! Correct answer is "${correct}".`
+          );
+        }
+
+        currentQuestionIndex++;
+        renderQuestion(currentQuestionIndex);
+      }
+
+      // Initial render
+      renderQuestion(currentQuestionIndex);
+
+      submitBtn.addEventListener("click", checkAnswerAndNext);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokémon Viewer</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 50px 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        background: white;
+        border-radius: 15px;
+        padding: 30px 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .input,
+      .options,
+      .actions {
+        margin-bottom: 25px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input[type="number"],
+      select {
+        width: 100%;
+        max-width: 250px;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        transition: border-color 0.3s ease;
+      }
+
+      input[type="number"]:focus,
+      select:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+      }
+
+      button {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+      }
+
+      .card {
+        background: #fafafa;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .card img {
+        max-width: 140px;
+        height: auto;
+        margin-bottom: 15px;
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+      }
+
+      .card h3 {
+        margin: 10px 0 12px;
+        font-weight: 700;
+        text-transform: capitalize;
+        color: #222;
+      }
+
+      .card p {
+        font-size: 14px;
+        margin: 6px 0;
+        color: #555;
+        line-height: 1.4;
+        min-height: 48px;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+        }
+        input[type="number"],
+        select {
+          max-width: 100%;
+        }
+        .cards {
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="input">
+        <label for="number-input">Number of Pokémon to Show (1-50)</label>
+        <input
+          type="number"
+          id="number-input"
+          min="1"
+          max="50"
+          value="5"
+          placeholder="Enter number between 1 and 50"
+        />
+      </div>
+      <div class="options">
+        <label for="category">Select a Pokémon Species:</label>
+        <select id="category"></select>
+      </div>
+      <div class="actions">
+        <button id="submit-btn">Show Info</button>
+      </div>
+      <div id="cards" class="cards"></div>
+    </div>
+
+    <script>
+      const categorySelect = document.getElementById("category");
+      const submitBtn = document.getElementById("submit-btn");
+      const cardsContainer = document.getElementById("cards");
+      const numberInput = document.getElementById("number-input");
+      let categories = [];
+
+      // Load species (categories)
+      async function getPokemonCategories() {
+        try {
+          const res = await fetch(
+            "https://pokeapi.co/api/v2/pokemon-species?limit=1000"
+          );
+          const data = await res.json();
+          categories = data.results;
+          populateDropdown();
+        } catch (err) {
+          console.error("Error fetching species:", err);
+        }
+      }
+
+      function populateDropdown() {
+        categorySelect.innerHTML = "";
+        categories.forEach((cat) => {
+          const opt = document.createElement("option");
+          opt.value = cat.name;
+          opt.textContent = capitalize(cat.name);
+          categorySelect.appendChild(opt);
+        });
+      }
+
+      // Capitalize first letter
+      function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      async function getPokemonbyCategory(category) {
+        try {
+          const res = await fetch(
+            `https://pokeapi.co/api/v2/pokemon-species/${category}`
+          );
+          const data = await res.json();
+          return data;
+        } catch (err) {
+          console.error("Error fetching species data:", err);
+          return null;
+        }
+      }
+
+      async function getPokemonData(url) {
+        try {
+          const res = await fetch(url);
+          return await res.json();
+        } catch (err) {
+          console.error("Error fetching pokemon data:", err);
+          return null;
+        }
+      }
+
+      function renderCard(info) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${info.image}" alt="${info.name}" loading="lazy" />
+          <h3>${capitalize(info.name)}</h3>
+          <p><strong>Color:</strong> ${capitalize(info.color)}</p>
+          <p><strong>Shape:</strong> ${capitalize(info.shape)}</p>
+          <p><strong>Description:</strong> ${info.description}</p>
+        `;
+        cardsContainer.appendChild(card);
+      }
+
+      submitBtn.addEventListener("click", async () => {
+        let count = parseInt(numberInput.value);
+        if (!count || count < 1) count = 1;
+        else if (count > 50) count = 50;
+
+        cardsContainer.innerHTML = "";
+
+        const selectedCategory = categorySelect.value;
+        const speciesData = await getPokemonbyCategory(selectedCategory);
+        if (!speciesData) return;
+
+        // Description from flavor_text_entries in English
+        const flavorEntry = speciesData.flavor_text_entries.find(
+          (entry) => entry.language.name === "en"
+        );
+        const description = flavorEntry
+          ? flavorEntry.flavor_text.replace(/\f/g, " ").replace(/\n/g, " ")
+          : "No description available";
+
+        // Limit varieties by requested count
+        const varietiesToShow = speciesData.varieties.slice(0, count);
+
+        // Fetch details for each variety and render
+        for (const variety of varietiesToShow) {
+          const pokemonData = await getPokemonData(variety.pokemon.url);
+
+          // Get official artwork or fallback sprite or placeholder
+          const image =
+            pokemonData.sprites?.other?.["official-artwork"]?.front_default ||
+            pokemonData.sprites?.front_default ||
+            "https://via.placeholder.com/150?text=No+Image";
+
+          const cardInfo = {
+            name: variety.pokemon.name,
+            image,
+            color: speciesData.color.name,
+            shape: speciesData.shape.name,
+            description,
+          };
+
+          renderCard(cardInfo);
+        }
+      });
+
+      // Initialize dropdown on page load
+      getPokemonCategories();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Todo</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- TODO Column -->
+      <div class="grid-item">
+        <div>
+          <div class="grid-header">
+            <span>Todo</span>
+          </div>
+          <div class="todo"></div>
+        </div>
+
+        <div class="btn">
+          <button id="toggleForm">ADD NEW TASK</button>
+        </div>
+
+        <div id="todoForm" class="input-todo" style="display: none">
+          <div>
+            <label for="todoName">NAME OF TODO:</label>
+            <input type="text" id="todoName" name="todo" />
+          </div>
+          <div>
+            <label for="desc">Description:</label>
+            <input type="text" id="desc" name="desc" />
+          </div>
+          <div>
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress Column -->
+      <div class="grid-item">
+        <div>
+          <div class="grid-header">
+            <span>In Progress</span>
+          </div>
+          <div class="progress drop-zone"></div>
+        </div>
+      </div>
+
+      <!-- Under Review Column -->
+      <div class="grid-item">
+        <div>
+          <div class="grid-header">
+            <span>Under Review</span>
+          </div>
+          <div class="review drop-zone"></div>
+        </div>
+      </div>
+
+      <!-- Finished Column -->
+      <div class="grid-item">
+        <div>
+          <div class="grid-header">
+            <span>Finished</span>
+          </div>
+          <div class="finished drop-zone"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

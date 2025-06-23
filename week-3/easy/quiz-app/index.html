@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        min-height: 80vh;
+        background-color: gray;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        flex-direction: column;
+        border-radius: 10px;
+      }
+      .question {
+        font-size: 35px;
+        margin: 0 auto;
+        padding: 20px 20px;
+      }
+      .option {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 20px;
+        gap: 40px;
+      }
+      .option > div {
+        margin-bottom: 40px;
+      }
+      label {
+        font-size: 30px;
+        padding: 10px 20px;
+      }
+      .submit {
+        margin-top: auto;
+        display: flex;
+        justify-content: center;
+      }
+      button {
+        padding: 30px;
+        font-size: 20px;
+        border-radius: 10px;
+        border: none;
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="question">
+        <h2>What is your name?</h2>
+      </div>
+      <div class="option">
+        <div>
+          <input type="radio" id="a" name="question1" />
+          <label for="option1">Option 1</label>
+        </div>
+        <div>
+          <input type="radio" id="b" name="question1" />
+          <label for="option1">Option 1</label>
+        </div>
+        <div>
+          <input type="radio" id="c" name="question1" />
+          <label for="option1">Option 1</label>
+        </div>
+        <div>
+          <input type="radio" id="d" name="question1" />
+          <label for="option1">Option 1</label>
+        </div>
+      </div>
+      <div class="submit">
+        <button>Submit</button>
+      </div>
+    </div>
+  </body>
+  <script type="module">
+    import { quizData } from "./data.js";
+    const quiz = quizData;
+    for (let index = 0; index < quiz.length; index++) {
+      const question = document.querySelector("question");
+      question.innerHTML = quiz[index]["question"];
+      const optionid = document.querySelector();
+    }
+  </script>
+</html>
